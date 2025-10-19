@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Recursos de Aprendizaje de Java para Gonzalo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script type="text/javascript">
+      var gk_isXlsx = false;
+      var gk_xlsxFileLookup = {};
+      var gk_fileData = {};
+      function filledCell(cell) {
+        return cell !== "" && cell != null;
+      }
+      function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+          try {
+            var workbook = XLSX.read(gk_fileData[filename], { type: "base64" });
+            var firstSheetName = workbook.SheetNames[0];
+            var worksheet = workbook.Sheets[firstSheetName];
+    
+            // Convert sheet to JSON to filter blank rows
+            var jsonData = XLSX.utils.sheet_to_json(worksheet, {
+              header: 1,
+              blankrows: false,
+              defval: "",
+            });
+            // Filter out blank rows (rows where all cells are empty, null, or undefined)
+            var filteredData = jsonData.filter((row) => row.some(filledCell));
+    
+            // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+            var headerRowIndex = filteredData.findIndex(
+              (row, index) =>
+                row.filter(filledCell).length >=
+                filteredData[index + 1]?.filter(filledCell).length
+            );
+            // Fallback
+            if (headerRowIndex === -1 || headerRowIndex > 25) {
+              headerRowIndex = 0;
+            }
+    
+            // Convert filtered JSON back to CSV
+            var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+            csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+            return csv;
+          } catch (e) {
+            console.error(e);
+            return "";
+          }
+        }
+        return gk_fileData[filename] || "";
+      }
+    </script>
+    <style>
+      body {
+        font-family: "Arial", sans-serif;
+        line-height: 1.6;
+        background-color: #f4f4f9;
+      }
+      .section-title {
+        color: #1f2937;
+        border-bottom: 2px solid #3b82f6;
+        padding-bottom: 0.5rem;
+      }
+      .resource-card {
+        background-color: #ffffff;
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+      .youtube-table th,
+      .youtube-table td {
+        border: 1px solid #e5e7eb;
+        padding: 0.75rem;
+        text-align: left;
+      }
+      .youtube-table th {
+        background-color: #3b82f6;
+        color: white;
+      }
+    </style>
+  </head>
+  <body class="container mx-auto px-4 py-8">
+    <header class="text-center mb-8">
+      <h1 class="text-4xl font-bold text-gray-800">
+        ¡Recursos de Java para Gonzalo!
+      </h1>
+      <p class="text-lg text-gray-600 mt-2">
+        ¡Enhorabuena por empezar DAW! Aquí tienes una guía completa para dominar
+        Java, desde lo básico hasta multihilo, con los mejores libros,
+        ejercicios, repositorios y canales de YouTube. ¡A por ello! 🚀
+      </p>
+    </header>
+
+    <section class="mb-12">
+      <h2 class="text-2xl font-semibold section-title">
+        Nivel Principiante: Fundamentos de Java
+      </h2>
+      <p class="text-gray-700 mb-4">
+        Empieza con la sintaxis básica, variables, bucles y condicionales.
+      </p>
+
+      <div class="resource-card">
+        <h3 class="text-xl font-semibold text-blue-600">Libros</h3>
+        <ul class="list-disc pl-5 text-gray-700">
+          <li>
+            <strong>Head First Java (3rd Edition)</strong> por Kathy Sierra y
+            Bert Bates (Inglés): Ideal para principiantes, con ejemplos visuales
+            y divertidos.
+            <a
+              href="https://www.amazon.com/Head-First-Java-Brain-Friendly-Guide/dp/1491910771"
+              class="text-blue-500 hover:underline"
+              >Comprar en Amazon</a
+            >
+          </li>
+          <li>
+            <strong>Aprende Java con Ejercicios</strong> por Luis José Sánchez
+            (Español): Más de 200 ejercicios resueltos desde cero.
+            <a
+              href="https://elhacker.info/"
+              class="text-blue-500 hover:underline"
+              >Descarga PDF gratis</a
+            >
+          </li>
+        </ul>
+      </div>
+
+      <div class="resource-card">
+        <h3 class="text-xl font-semibold text-blue-600">
+          Cuadernos de Ejercicios
+        </h3>
+        <ul class="list-disc pl-5 text-gray-700">
+          <li>
+            <strong>Ejercicios de Programación en Java</strong> (PDF, Español):
+            Problemas resueltos sobre arrays y strings.
+            <a
+              href="https://www.programacion.com.py/"
+              class="text-blue-500 hover:underline"
+              >Buscar en la web</a
+            >
+          </li>
+          <li>
+            <strong>HackerRank/LeetCode</strong>: Problemas fáciles como "Sumar
+            dos números" para practicar bucles.
+            <a
+              href="https://www.hackerrank.com/"
+              class="text-blue-500 hover:underline"
+              >HackerRank</a
+            >
+            |
+            <a
+              href="https://leetcode.com/"
+              class="text-blue-500 hover:underline"
+              >LeetCode</a
+            >
+          </li>
+        </ul>
+      </div>
+
+      <div class="resource-card">
+        <h3 class="text-xl font-semibold text-blue-600">
+          Repositorios de GitHub
+        </h3>
+        <ul class="list-disc pl-5 text-gray-700">
+          <li>
+            <strong>mouredev/hello-java</strong>: Curso en español con 75
+            lecciones y ejercicios prácticos.
+            <a
+              href="https://github.com/mouredev/hello-java"
+              class="text-blue-500 hover:underline"
+              >Ver en GitHub</a
+            >
+          </li>
+          <li>
+            <strong>in28minutes/java-tutorial-for-beginners</strong>: 500+
+            ejemplos de código en inglés.
+            <a
+              href="https://github.com/in28minutes/java-tutorial-for-beginners"
+              class="text-blue-500 hover:underline"
+              >Ver en GitHub</a
+            >
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="mb-12">
+      <h2 class="text-2xl font-semibold section-title">
+        Nivel Intermedio: Programación Orientada a Objetos
+      </h2>
+      <p class="text-gray-700 mb-4">
+        Domina clases, herencia, interfaces, polimorfismo y colecciones.
+      </p>
+
+      <div class="resource-card">
+        <h3 class="text-xl font-semibold text-blue-600">Libros</h3>
+        <ul class="list-disc pl-5 text-gray-700">
+          <li>
+            <strong>Effective Java (3rd Edition)</strong> por Joshua Bloch
+            (Inglés): Mejores prácticas para OOP.
+            <a
+              href="https://www.amazon.com/Effective-Java-Joshua-Bloch/dp/0134685997"
+              class="text-blue-500 hover:underline"
+              >Comprar en Amazon</a
+            >
+          </li>
+          <li>
+            <strong>Cómo Programar en Java</strong> por Paul Deitel y Harvey
+            Deitel (Español): Ejemplos detallados de herencia e interfaces.
+            <a
+              href="https://www.amazon.com/Java-Programar-Spanish-Harvey-Deitel/dp/6073230699"
+              class="text-blue-500 hover:underline"
+              >Comprar en Amazon</a
+            >
+          </li>
+        </ul>
+      </div>
+
+      <div class="resource-card">
+        <h3 class="text-xl font-semibold text-blue-600">
+          Cuadernos de Ejercicios
+        </h3>
+        <ul class="list-disc pl-5 text-gray-700">
+          <li>
+            <strong>Java Programming Exercises: Volume One</strong> por
+            Christian Ullenboom (Inglés): Ejercicios sobre clases y herencia.
+            <a
+              href="https://www.amazon.com/Java-Programming-Exercises-Christian-Ullenboom/dp/389864779X"
+              class="text-blue-500 hover:underline"
+              >Comprar</a
+            >
+          </li>
+          <li>
+            <strong>Ejercicios de POO con Java y UML</strong> (PDF, Español):
+            Problemas con diagramas UML.
+            <a
+              href="https://www.programacion.com.py/"
+              class="text-blue-500 hover:underline"
+              >Buscar en la web</a
+            >
+          </li>
+        </ul>
+      </div>
+
+      <div class="resource-card">
+        <h3 class="text-xl font-semibold text-blue-600">
+          Repositorios de GitHub
+        </h3>
+        <ul class="list-disc pl-5 text-gray-700">
+          <li>
+            <strong>aulaenlanube/curso-programacion-java</strong>: Ejemplos para
+            ciclos formativos en español.
+            <a
+              href="https://github.com/aulaenlanube/curso-programacion-java"
+              class="text-blue-500 hover:underline"
+              >Ver en GitHub</a
+            >
+          </li>
+          <li>
+            <strong>iluwatar/java-design-patterns</strong>: Patrones de diseño
+            en inglés para interfaces.
+            <a
+              href="https://github.com/iluwatar/java-design-patterns"
+              class="text-blue-500 hover:underline"
+              >Ver en GitHub</a
+            >
+          </li>
+        </ul>
+      </div>
+
+      <div class="resource-card">
+        <h3 class="text-xl font-semibold text-blue-600">
+          Resolución de Problemas
+        </h3>
+        <p class="text-gray-700">
+          Usa
+          <a
+            href="https://www.codewars.com/"
+            class="text-blue-500 hover:underline"
+            >Codewars</a
+          >
+          o
+          <a
+            href="https://codingbat.com/java"
+            class="text-blue-500 hover:underline"
+            >CodingBat</a
+          >
+          para ejercicios como "Implementar clase Animal con herencia".
+        </p>
+      </div>
+    </section>
+
+    <section class="mb-12">
+      <h2 class="text-2xl font-semibold section-title">
+        Nivel Avanzado: Multihilo y Concurrencia
+      </h2>
+      <p class="text-gray-700 mb-4">
+        Aprende threads, sincronización y concurrencia avanzada.
+      </p>
+
+      <div class="resource-card">
+        <h3 class="text-xl font-semibold text-blue-600">Libros</h3>
+        <ul class="list-disc pl-5 text-gray-700">
+          <li>
+            <strong>Java Concurrency in Practice</strong> por Brian Goetz
+            (Inglés): Lo mejor para multihilo.
+            <a
+              href="https://www.amazon.com/Java-Concurrency-Practice-Brian-Goetz/dp/0321349601"
+              class="text-blue-500 hover:underline"
+              >Comprar en Amazon</a
+            >
+          </li>
+          <li>
+            <strong>Thinking in Java</strong> por Bruce Eckel (Inglés/Español):
+            Sección de concurrencia práctica.
+            <a
+              href="https://www.amazon.com/Thinking-Java-4th-Bruce-Eckel/dp/0131872486"
+              class="text-blue-500 hover:underline"
+              >Comprar en Amazon</a
+            >
+          </li>
+        </ul>
+      </div>
+
+      <div class="resource-card">
+        <h3 class="text-xl font-semibold text-blue-600">
+          Cuadernos de Ejercicios
+        </h3>
+        <ul class="list-disc pl-5 text-gray-700">
+          <li>
+            <strong>Jenkov Tutorials</strong>: Problemas de multihilo como
+            sincronización de listas.
+            <a
+              href="http://tutorials.jenkov.com/java-concurrency/index.html"
+              class="text-blue-500 hover:underline"
+              >Visitar Jenkov</a
+            >
+          </li>
+          <li>
+            Revisa ejercicios de multihilo en
+            <strong>Aprende Java con Ejercicios</strong> (PDF).
+          </li>
+        </ul>
+      </div>
+
+      <div class="resource-card">
+        <h3 class="text-xl font-semibold text-blue-600">
+          Repositorios de GitHub
+        </h3>
+        <ul class="list-disc pl-5 text-gray-700">
+          <li>
+            <strong>Trycatch-tv/30-dias-de-proyectos-en-java</strong>: Proyectos
+            con multihilo simple en español.
+            <a
+              href="https://github.com/Trycatch-tv/30-dias-de-proyectos-en-java"
+              class="text-blue-500 hover:underline"
+              >Ver en GitHub</a
+            >
+          </li>
+          <li>
+            <strong>cyfonly/java-concurrency</strong>: Ejemplos avanzados de
+            threads y locks.
+            <a
+              href="https://github.com/cyfonly/java-concurrency"
+              class="text-blue-500 hover:underline"
+              >Ver en GitHub</a
+            >
+          </li>
+        </ul>
+      </div>
+
+      <div class="resource-card">
+        <h3 class="text-xl font-semibold text-blue-600">
+          Resolución de Problemas
+        </h3>
+        <p class="text-gray-700">
+          Prueba problemas como "Producer-Consumer" en
+          <a href="https://leetcode.com/" class="text-blue-500 hover:underline"
+            >LeetCode</a
+          >
+          o sigue el tutorial de Jenkov para evitar race conditions.
+        </p>
+      </div>
+    </section>
+
+    <section class="mb-12">
+      <h2 class="text-2xl font-semibold section-title">
+        Canales de YouTube para Aprender Java
+      </h2>
+      <p class="text-gray-700 mb-4">
+        Complementa tu aprendizaje con estos canales de programadores
+        influencers.
+      </p>
+      <table class="w-full youtube-table">
+        <thead>
+          <tr>
+            <th>Canal</th>
+            <th>Creador</th>
+            <th>Descripción</th>
+            <th>Enlace</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Midudev</td>
+            <td>Miguel Ángel Durán</td>
+            <td>
+              Tutoriales avanzados y retos de JavaScript/Java; ideal para
+              algoritmos y DAW.
+            </td>
+            <td>
+              <a
+                href="https://www.youtube.com/@midudev"
+                class="text-blue-500 hover:underline"
+                >Visitar</a
+              >
+            </td>
+          </tr>
+          <tr>
+            <td>HolaMundo</td>
+            <td>Carlos Santana Roldán</td>
+            <td>
+              Cursos completos de Java desde cero, perfectos para principiantes
+              con humor.
+            </td>
+            <td>
+              <a
+                href="https://www.youtube.com/@HolaMundoDev"
+                class="text-blue-500 hover:underline"
+                >Visitar</a
+              >
+            </td>
+          </tr>
+          <tr>
+            <td>Hdeleon.net</td>
+            <td>Héctor de León</td>
+            <td>
+              Cursos de Java y Python con proyectos reales; accesible para OOP.
+            </td>
+            <td>
+              <a
+                href="https://www.youtube.com/@Hdeleonnet"
+                class="text-blue-500 hover:underline"
+                >Visitar</a
+              >
+            </td>
+          </tr>
+          <tr>
+            <td>MoureDev</td>
+            <td>Christian Moure</td>
+            <td>
+              Retos y cursos de Java; enfocado en ejercicios prácticos de OOP y
+              multihilo.
+            </td>
+            <td>
+              <a
+                href="https://www.youtube.com/@MoureDev"
+                class="text-blue-500 hover:underline"
+                >Visitar</a
+              >
+            </td>
+          </tr>
+          <tr>
+            <td>Píldoras Informáticas</td>
+            <td>Equipo</td>
+            <td>
+              Cursos completos de Java para DAW, con ejercicios resueltos.
+            </td>
+            <td>
+              <a
+                href="https://www.youtube.com/@PildorasInformaticas"
+                class="text-blue-500 hover:underline"
+                >Visitar</a
+              >
+            </td>
+          </tr>
+          <tr>
+            <td>Código Facilito</td>
+            <td>Equipo (México)</td>
+            <td>Tutoriales rápidos de Java y web dev; proyectos simples.</td>
+            <td>
+              <a
+                href="https://www.youtube.com/@codigofacilito"
+                class="text-blue-500 hover:underline"
+                >Visitar</a
+              >
+            </td>
+          </tr>
+          <tr>
+            <td>Fazt</td>
+            <td>Faztcode</td>
+            <td>
+              Cursos profundos de Java y bases de datos; ideal para multihilo.
+            </td>
+            <td>
+              <a
+                href="https://www.youtube.com/@FaztCode"
+                class="text-blue-500 hover:underline"
+                >Visitar</a
+              >
+            </td>
+          </tr>
+          <tr>
+            <td>Victor Robles WEB</td>
+            <td>Víctor Robles</td>
+            <td>Desarrollo web con Java; proyectos prácticos para DAW.</td>
+            <td>
+              <a
+                href="https://www.youtube.com/@VictorRoblesWEB"
+                class="text-blue-500 hover:underline"
+                >Visitar</a
+              >
+            </td>
+          </tr>
+          <tr>
+            <td>DominiCode</td>
+            <td>Equipo</td>
+            <td>Cursos gratuitos de Java; enfocado en OOP y multihilo.</td>
+            <td>
+              <a
+                href="https://www.youtube.com/@DominiCode"
+                class="text-blue-500 hover:underline"
+                >Visitar</a
+              >
+            </td>
+          </tr>
+          <tr>
+            <td>OpenBootcamp</td>
+            <td>Equipo</td>
+            <td>Formación en Java y Angular; proyectos para empleabilidad.</td>
+            <td>
+              <a
+                href="https://www.youtube.com/@OpenBootcamp"
+                class="text-blue-500 hover:underline"
+                >Visitar</a
+              >
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="mb-12">
+      <h2 class="text-2xl font-semibold section-title">
+        Recursos Adicionales: Herramientas y Comunidad
+      </h2>
+      <p class="text-gray-700 mb-4">
+        Herramientas esenciales y comunidades que te ayudarán en tu camino como desarrollador.
+      </p>
+
+      <div class="resource-card">
+        <h3 class="text-xl font-semibold text-blue-600">Herramientas de Desarrollo</h3>
+        <ul class="list-disc pl-5 text-gray-700">
+          <li>
+            <strong>Oh My Git!</strong>: Un juego interactivo para aprender Git de manera visual y divertida. 
+            Perfecto para dominar el control de versiones desde cero.
+            <a
+              href="https://ohmygit.org"
+              class="text-blue-500 hover:underline"
+              >Jugar y aprender</a
+            >
+          </li>
+        </ul>
+      </div>
+
+      <div class="resource-card">
+        <h3 class="text-xl font-semibold text-blue-600">Comunidades</h3>
+        <ul class="list-disc pl-5 text-gray-700">
+          <li>
+            <strong>SVQTech - Comunidad de comunidades de <a href="http://www.meetup.com/">MeetUp</a> de programadores de Sevilla</strong>: Conéctate con otros 
+            desarrolladores locales, asiste a eventos y charlas técnicas. Una excelente oportunidad para 
+            hacer networking y aprender de otros profesionales.
+            <a
+              href="https://svqtech.netlify.app/comunidades"
+              class="text-blue-500 hover:underline"
+              >Unirse a la comunidad</a
+            >
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <footer class="text-center text-gray-600">
+      <h3 class="text-xl font-semibold">Consejos para Gonzalo</h3>
+      <ul class="list-disc pl-5 text-left mx-auto max-w-2xl">
+        <li>
+          <strong>Progresión:</strong> Dedica 1-2 semanas por nivel, alternando
+          teoría y práctica.
+        </li>
+        <li>
+          <strong>Herramientas:</strong> Usa IntelliJ IDEA (gratis para
+          estudiantes) para probar código.
+        </li>
+        <li>
+          <strong>Práctica:</strong> Codifica junto a los vídeos de YouTube y
+          sube proyectos a GitHub.
+        </li>
+        <li>
+          <strong>Plataformas extra:</strong> GeeksforGeeks, Project Euler o
+          Codewars para retos.
+        </li>
+        <li>
+          <strong>DAW:</strong> Explora Spring Boot en GitHub (<a
+            href="https://github.com/spring-projects/spring-boot"
+            class="text-blue-500 hover:underline"
+            >spring-boot</a
+          >) para web.
+        </li>
+        <li>
+          <strong>Bilingüe:</strong> Añade el canal Telusko (inglés) para Java
+          puro si quieres más.
+        </li>
+      </ul>
+      <p class="mt-4">¡Ánimo en tu aventura con Java y DAW! 💻</p>
+    </footer>
+  </body>
+</html>
